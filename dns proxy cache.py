@@ -5,6 +5,7 @@ local_port = 53
 remote_host = '192.168.0.1'
 remote_port = 53
 _cache = {}
+_DEBUG = True
 
 
 def receive_from(_socket):
@@ -30,13 +31,14 @@ def dns_receive_remore(local_buffer, local_addr, remote_socket):
             return remote_buffer
     return None
 
+
 def memoize(func):
-    ''' Декоратов для обработки кеша запроса функции'''
+    """ Декоратов для обработки кеша запроса функции."""
     def wrapper(*args, **kwargs):
         name = func.__name__
         key = (name, args, frozenset(kwargs.items()))
         if key in _cache:
-            if _cache[key] != None:
+            if _cache[key] is not None:
                 print('[*] Received cache DNS %d bytes from localhost' % len(_cache[key]))
             return _cache[key]
         result = func(*args, **kwargs)
@@ -45,7 +47,9 @@ def memoize(func):
         return result
     return wrapper
 
+
 def server_loop(local_host, local_port):
+    global _DEBUG
     server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:
         server.bind((local_host, local_port))
@@ -58,8 +62,11 @@ def server_loop(local_host, local_port):
     while True:
         local_buffer, local_addr = receive_from(server)
         remote_buffer = cache(local_buffer, local_addr, remote_socket)
-        if remote_buffer != None:
+        if remote_buffer is not None:
             server.sendto(remote_buffer, local_addr)
-            print('Send localhost %d bytes' % len(remote_buffer))
+            if _DEBUG:
+                print('Send localhost %d bytes' % len(remote_buffer))
+                _DEBUG = False
+
 
 server_loop(local_host, local_port)
