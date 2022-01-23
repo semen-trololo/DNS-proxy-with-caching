@@ -21,7 +21,10 @@ def receive_from(_socket):
 def dns_receive_remore(local_buffer, local_addr, remote_socket):
 
     if len(local_buffer) and len(local_addr[0]):
-        remote_socket.sendto(local_buffer, (remote_host, remote_port))
+        try:
+            remote_socket.sendto(local_buffer, (remote_host, remote_port))
+        except:
+            print('[!]Can not send DNS to remote.')
         remote_buffer, remore_addr = receive_from(remote_socket)
         if len(remote_buffer):
             return remote_buffer
@@ -57,6 +60,6 @@ def server_loop(local_host, local_port):
         remote_buffer = cache(local_buffer, local_addr, remote_socket)
         if remote_buffer != None:
             server.sendto(remote_buffer, local_addr)
-
+            print('Send localhost %d bytes' % len(remote_buffer))
 
 server_loop(local_host, local_port)
