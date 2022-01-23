@@ -36,13 +36,13 @@ def memoize(func):
     """ Декоратов для обработки кеша запроса функции."""
     def wrapper(*args, **kwargs):
         name = func.__name__
-        key = (name, args, frozenset(kwargs.items()))
+        key = (name, args[0], frozenset(kwargs.items()))
         if key in _cache:
             if _cache[key] is not None:
                 print('[*] Received cache DNS %d bytes from localhost' % len(_cache[key]))
             return _cache[key]
         result = func(*args, **kwargs)
-        if result != None:
+        if result is not None:
             _cache[key] = result
         return result
     return wrapper
