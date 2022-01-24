@@ -11,7 +11,7 @@ _DEBUG = True
 def receive_from(_socket):
     _socket.settimeout(1)
     try:
-        data, addres = _socket.recvfrom(4096)
+        data, addres = _socket.recvfrom(512)
     except:
         data = ''
         addres = ('', 0)
@@ -36,14 +36,17 @@ def memoize(func):
     """ Декоратов для обработки кеша запроса функции."""
     def wrapper(*args, **kwargs):
         name = func.__name__
-        key = (name, args[0], frozenset(kwargs.items()))
+        dns_not_id_header = args[0][2:]
+        _id = args[0][:2]
+        key = (name, dns_not_id_header, frozenset(kwargs.items()))
         if key in _cache:
             if _cache[key] is not None:
                 print('[*] Received cache DNS %d bytes from localhost' % len(_cache[key]))
-            return _cache[key]
+                print('[?] Len caches: ', len(_cache))
+            return _id + _cache[key]
         result = func(*args, **kwargs)
         if result is not None:
-            _cache[key] = result
+            _cache[key] = result[2:]
         return result
     return wrapper
 
