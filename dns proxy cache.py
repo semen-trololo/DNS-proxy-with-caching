@@ -43,7 +43,7 @@ def memoize(func):
             if _cache[key] is not None:
                 print('[*] Received cache DNS %d bytes from localhost' % len(_cache[key]))
                 print('[?] Len caches: ', len(_cache))
-            return _id + _cache[key]
+                return _id + _cache[key]
         result = func(*args, **kwargs)
         if result is not None:
             if dns_ot(result):
