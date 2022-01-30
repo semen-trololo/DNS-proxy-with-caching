@@ -63,6 +63,7 @@ def memoize(func):
 
 
 def dns(dns, _DEBUG = False):
+    """Parsing a DNS query"""
     ID = dns[0:2]
     tmp = byte_in_bit(dns[2])
     QR = tmp[0]
@@ -82,7 +83,7 @@ def dns(dns, _DEBUG = False):
     tmp = byte_in_bit(dns[12])
     if tmp[0] == 0:
         if _DEBUG:
-            print('[*]Normal metka')
+            print('[*]Normal mark')
         len_metka = '0b'
         for i in [2, 3, 4, 5, 6, 7]:
             len_metka += str(tmp[i])
@@ -118,6 +119,7 @@ def dns(dns, _DEBUG = False):
 
 
 def dns_ot(dns, _DEBUG = False):
+    """ Parsing a DNS query"""
     ID = dns[0:2]
     if _DEBUG:
         print(dns)
@@ -149,7 +151,7 @@ def dns_ot(dns, _DEBUG = False):
     tmp = byte_in_bit(dns[12])
     if tmp[0] == 0:
         if _DEBUG:
-            print('[*]Normal metka')
+            print('[*]Normal mark')
         len_metka = '0b'
         for i in [2, 3, 4, 5, 6, 7]:
             len_metka += str(tmp[i])
@@ -186,7 +188,7 @@ def dns_ot(dns, _DEBUG = False):
         tmp = byte_in_bit(dns[marker])
         if tmp[0] == 1:
             if _DEBUG:
-                print('Сжатая сылка')
+                print('[*] Compressed label')
             len_metka = '0b'
             for i in [2, 3, 4, 5, 6, 7]:
                 len_metka += str(tmp[i])
